@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoa Tang Lễ - Nhã Uyên Flower</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        /* Reuse styles from homepage/cart page */
+        body { font-family: 'Quicksand', sans-serif; overflow-x: hidden; background-color: #FFFAFA; }
+        h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Playfair Display', serif; }
+        .logo-img { max-height: 60px; width: auto; transition: transform 0.3s ease; }
+        .logo-img:hover { transform: scale(1.05); }
+        header { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 50; }
+        .search-container { position: relative; width: 100%; max-width: 350px; }
+        .search-input { padding-right: 3rem; border-radius: 999px; border: 1px solid #e5e7eb; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+        .search-input:focus { border-color: #f472b6; box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.2); outline: none; }
+        .search-button { position: absolute; right: 0.25rem; top: 50%; transform: translateY(-50%); padding: 0.5rem; border-radius: 999px; background-color: #f472b6; color: white; transition: background-color 0.3s ease; }
+        .search-button:hover { background-color: #ec4899; }
+        nav a, .dropdown > button { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.75rem; position: relative; transition: color 0.3s ease; color: #4b5563; font-weight: 500; }
+        nav a::after, .dropdown > button::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; background-color: #f472b6; transition: width 0.3s ease, left 0.3s ease; border-radius: 1px; }
+        nav a:hover, .dropdown > button:hover, nav a.active { color: #f472b6; }
+        nav a:hover::after, .dropdown > button:hover::after, nav a.active::after { width: calc(100% - 1.5rem); left: 0.75rem; }
+        nav a.active { font-weight: 600; }
+        .dropdown { position: relative; }
+        .dropdown > button.active { color: #f472b6; /* Indicate active dropdown parent */ }
+        .dropdown-content { display: none; position: absolute; background-color: #ffffff; min-width: 230px; box-shadow: 0px 10px 25px rgba(0,0,0,0.1); z-index: 100; border-radius: 0.5rem; padding: 0.75rem 0; left: 0; top: 100%; margin-top: 0.75rem; opacity: 0; transform: translateY(-10px) scale(0.98); transition: opacity 0.25s ease, transform 0.25s ease; border: 1px solid #f3f4f6; }
+        .dropdown-content a { color: #374151; padding: 10px 20px; text-decoration: none; display: block; transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease; white-space: nowrap; font-size: 0.95rem; }
+        .dropdown-content a:hover { background-color: #fdf2f8; color: #db2777; padding-left: 24px; }
+        .dropdown-content a.active { background-color: #fce7f3; color: #db2777; font-weight: 600; } /* Style for active category link */
+        .dropdown-content.show { display: block; opacity: 1; transform: translateY(0) scale(1); }
+        .btn { display: inline-block; padding: 0.8rem 2rem; border-radius: 999px; font-weight: 600; text-align: center; transition: all 0.3s ease; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); letter-spacing: 0.5px; }
+        .btn-primary { background-color: #f472b6; color: white; }
+        .btn-primary:hover { background-color: #ec4899; box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4); transform: translateY(-2px); }
+        .btn-secondary { background-color: white; color: #f472b6; border: 2px solid #f472b6; }
+        .btn-secondary:hover { background-color: #fdf2f8; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
+        footer { background-color: #374151; color: #d1d5db; padding-top: 3rem; padding-bottom: 2rem; }
+        footer h4 { color: #f9fafb; font-size: 1.25rem; }
+        footer a { color: #d1d5db; transition: color 0.3s ease; }
+        footer a:hover { color: #f9a8d4; }
+        .footer-socials a { font-size: 1.5rem; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background-color: #ffffff; transition: background-color 0.3s ease, color 0.3s ease; }
+        .footer-socials a:hover { background-color: #f472b6; color: white; }
+        footer ul li { margin-bottom: 0.6rem; }
+        footer ul li i { width: 20px; text-align: center; }
+        .petal { position: fixed; font-size: 1.5rem; pointer-events: none; user-select: none; z-index: 9999; animation: fall var(--fall-duration, 3s) linear forwards; color: #fbcfe8; opacity: 0.9; text-shadow: 0 0 5px rgba(0,0,0,0.2); }
+        @keyframes fall { 0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.9; } 100% { transform: translateY(200px) translateX(calc(var(--random-x) * 60px)) rotate(calc(var(--random-r) * 450deg)); opacity: 0; } }
+        .fade-in-section { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .fade-in-section.is-visible { opacity: 1; transform: translateY(0); }
+        #mobile-menu { background-color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        #mobile-menu a, #mobile-categories-button { padding: 1rem 1.5rem; border-bottom: 1px solid #f3f4f6; font-weight: 500; }
+        #mobile-menu a:last-child { border-bottom: none; }
+        #mobile-menu a i, #mobile-categories-button i:first-child { color: #f472b6; }
+        #mobile-categories-dropdown a { padding: 0.75rem 1.5rem 0.75rem 2.5rem; font-size: 0.95rem; border-bottom: 1px solid #f9fafb; }
+         #mobile-categories-dropdown a.active { background-color: #fdf2f8; color: #db2777; font-weight: 600; } /* Active mobile category */
+        #mobile-categories-dropdown a:last-child { border-bottom: none; }
+        @media (max-width: 768px) {
+            nav a, .dropdown > button { padding: 0.5rem 0.5rem; }
+            nav a::after, .dropdown > button::after { bottom: -2px; width: calc(100% - 1rem); left: 0.5rem; }
+            .search-container { margin-top: 0.5rem; order: 3; width: calc(100% - 2rem); margin-left: 1rem; margin-right: 1rem; }
+            header .container > div { flex-wrap: wrap; justify-content: space-between; }
+            header .container > a { order: 1; }
+            header .container > button#mobile-menu-button { order: 2; }
+            header .container > nav { order: 4; }
+        }
+
+        /* Category Page Specific Styles */
+        .breadcrumb { font-size: 0.9rem; color: #6b7280; margin-bottom: 2rem; }
+        .breadcrumb a { color: #f472b6; transition: color 0.2s ease; }
+        .breadcrumb a:hover { color: #db2777; }
+        .breadcrumb span { margin: 0 0.5rem; }
+
+        /* Product Card Styles (Reused) */
+        .product-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; border: 1px solid #f3f4f6; }
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12); }
+        .product-card .image-container { position: relative; overflow: hidden; background-color: #f9fafb; }
+        /* Ensure image covers the container */
+        .product-card img { width: 100%; height: 250px; object-fit: cover; transition: transform 0.4s ease; }
+        .product-card:hover img { transform: scale(1.08); }
+        .product-card .overlay-actions { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); padding: 1rem; display: flex; justify-content: center; opacity: 0; transform: translateY(10px); transition: opacity 0.3s ease, transform 0.3s ease; }
+        .product-card:hover .overlay-actions { opacity: 1; transform: translateY(0); }
+        .product-card .btn-quick-view { background-color: rgba(255, 255, 255, 0.9); color: #374151; padding: 0.5rem 1rem; font-size: 0.85rem; margin: 0 0.25rem; border-radius: 999px; border: none; cursor: pointer; transition: all 0.2s ease; }
+        .product-card .btn-quick-view:hover { background-color: white; color: #ec4899; }
+        .product-card .details { padding: 1.25rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #1f2937; font-weight: 600; }
+        .product-card .price { color: #ec4899; font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem; }
+        .product-card .btn-add-cart { padding: 0.6rem 1rem; font-size: 0.9rem; margin-top: auto; width: 100%; }
+
+        /* Section Title for Category */
+        .category-title { font-size: clamp(2.2rem, 5vw, 3rem); color: #374151; margin-bottom: 1rem; text-align: center; position: relative; padding-bottom: 1.5rem; }
+        .category-title::after { content: ''; position: absolute; width: 90px; height: 4px; background: linear-gradient(90deg, #a5b4fc, #818cf8); bottom: 0; left: 50%; transform: translateX(-50%); border-radius: 2px; }
+/* --- CSS Thêm cho Màu Icon Mạng Xã Hội --- */
+
+/* Đặt màu mặc định cho từng icon */
+.footer-socials a[href*="facebook.com"] i {
+    color: #1877F2; /* Màu xanh dương của Facebook */
+}
+
+.footer-socials a[href*="instagram.com"] i {
+    color: #C13584; /* Màu hồng/tím của Instagram */
+    /* Bạn cũng có thể thử các màu khác như #E1306C */
+}
+
+.footer-socials a[href*="tiktok.com"] i {
+    color: #000000; /* Màu đen của TikTok (hoặc #111111) */
+     /* TikTok có logo phức tạp, màu đen thường được dùng cho icon đơn sắc */
+}
+
+.footer-socials a[href*="zalo.me"] i {
+    color: #0068FF; /* Màu xanh dương của Zalo */
+}
+
+/* Giữ nguyên hiệu ứng hover (nền hồng, icon trắng) */
+/* Quy tắc CSS này đã có sẵn trong file của bạn và sẽ hoạt động: */
+.footer-socials a:hover {
+    background-color: #f472b6; /* Nền hồng khi hover */
+    color: white; /* Màu chữ (và icon kế thừa) thành trắng khi hover */
+}
+
+/* --- Hết phần CSS Thêm --- */
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <header>
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="flex items-center flex-shrink-0">
+                    <img src="logo.png" alt="Nhã Uyên Flower Logo" class="logo-img" onerror="this.onerror=null; this.src='https://placehold.co/180x60/f0f9ff/333?text=Logo';">
+                </a>
+                <div class="search-container hidden md:block mx-4 flex-grow max-w-md">
+                    <input type="text" placeholder="Tìm kiếm sản phẩm..." class="search-input w-full px-4 py-2 text-sm">
+                    <button class="search-button" aria-label="Tìm kiếm">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <nav class="hidden md:flex space-x-1 items-center">
+                    <a href="index.html">
+                        <i class="fa-solid fa-house-chimney fa-fw"></i> Trang Chủ
+                    </a>
+                    <div class="dropdown">
+                        <button id="categories-button" class="focus:outline-none active">
+                            <i class="fa-solid fa-layer-group fa-fw"></i> Danh Mục
+                            <i class="fas fa-chevron-down text-xs ml-1 transition-transform duration-300"></i>
+                        </button>
+                        <div id="categories-dropdown" class="dropdown-content">
+                            <a href="category-tang-le.html" class="active">Hoa Tang Lễ</a>
+                            <a href="#hoa-nguoi-yeu">Hoa Tặng Người Yêu</a>
+                            <a href="#hoa-tot-nghiep">Hoa Tốt Nghiệp</a>
+                            <a href="#hoa-20-11">Hoa 20/11</a>
+                            <a href="#hoa-8-3">Hoa 8/3</a>
+                            <a href="#hoa-tien">Hoa Tiền</a>
+                            <a href="#hoa-khai-truong">Hoa Khai Trương</a>
+                            <a href="#hoa-tuoi-chung">Hoa Tươi (Chung)</a>
+                        </div>
+                    </div>
+                    <a href="cart.html">
+                        <i class="fa-solid fa-cart-shopping fa-fw"></i> Giỏ Hàng
+                    </a>
+                </nav>
+                <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none p-2">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+             <div class="search-container md:hidden mt-3">
+                <input type="text" placeholder="Tìm kiếm sản phẩm..." class="search-input w-full px-4 py-2 text-sm">
+                <button class="search-button" aria-label="Tìm kiếm">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200">
+             <a href="index.html" class="block text-gray-700 hover:bg-pink-50 hover:text-pink-600"><i class="fa-solid fa-house-chimney fa-fw mr-3 w-5 text-center"></i>Trang Chủ</a>
+             <div>
+                  <button id="mobile-categories-button" class="w-full text-left text-pink-600 bg-pink-50 font-semibold flex justify-between items-center">
+                      <span><i class="fa-solid fa-layer-group fa-fw mr-3 w-5 text-center"></i>Danh Mục</span>
+                      <i class="fas fa-chevron-down text-xs mobile-dropdown-icon transition-transform duration-300 mr-4"></i>
+                  </button>
+                  <div id="mobile-categories-dropdown" class="bg-gray-50">
+                      <a href="category-tang-le.html" class="block py-2 text-gray-600 hover:text-pink-600 hover:bg-pink-100 active">Hoa Tang Lễ</a>
+                      <a href="#hoa-nguoi-yeu" class="block py-2 text-gray-600 hover:text-pink-600 hover:bg-pink-100">Hoa Tặng Người Yêu</a>
+                      <a href="#hoa-tot-nghiep" class="block py-2 text-gray-600 hover:text-pink-600 hover:bg-pink-100">Hoa Tốt Nghiệp</a>
+                      <a href="#hoa-20-11" class="block py-2 text-gray-600 hover:text-pink-600 hover:bg-pink-100">Hoa 20/11</a>
+                      <a href="#hoa-8-3" class="block py-2 text-gray-600 hover:text-pink-600 hover:bg-pink-100">Hoa 8/3</a>
+                      <a href="#hoa-tien" class="block py-2 text-gray-600 hover:text-pink-600 hover:bg-pink-100">Hoa Tiền</a>
+                      <a href="#hoa-khai-truong" class="block py-2 text-gray-600 hover:text-pink-600 hover:bg-pink-100">Hoa Khai Trương</a>
+                      <a href="#hoa-tuoi-chung" class="block py-2 text-gray-600 hover:text-pink-600 hover:bg-pink-100">Hoa Tươi (Chung)</a>
+                  </div>
+             </div>
+             <a href="cart.html" class="block text-gray-700 hover:bg-pink-50 hover:text-pink-600">
+                 <i class="fa-solid fa-cart-shopping fa-fw mr-3 w-5 text-center"></i>Giỏ Hàng
+             </a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <div class="text-center mb-10 fade-in-section">
+            <h1 class="category-title font-heading">
+                Hoa Tang Lễ
+            </h1>
+            <nav class="breadcrumb flex justify-center items-center" aria-label="Breadcrumb">
+                <a href="index.html">Trang Chủ</a>
+                <span><i class="fas fa-chevron-right text-xs"></i></span>
+                <a href="#categories">Danh Mục</a>
+                <span><i class="fas fa-chevron-right text-xs"></i></span>
+                <span class="font-medium text-gray-800">Hoa Tang Lễ</span>
+            </nav>
+            <p class="max-w-2xl mx-auto text-gray-600 text-sm md:text-base">
+                Thể hiện lòng thành kính và chia sẻ nỗi buồn cùng gia quyến với những vòng hoa, kệ hoa trang trọng, ý nghĩa từ Nhã Uyên Flower.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 fade-in-section">
+            <div class="product-card group">
+                <div class="image-container">
+                    <img src="hoatangle1.jpeg" alt="Hoa Tang Lễ - Mẫu 1" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                    <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                    <div>
+                        <h3 class="font-heading">Thành Kính Phân Ưu - Mẫu 1</h3>
+                        <p class="price">1.200.000₫</p>
+                    </div>
+                    <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <div class="product-card group">
+                <div class="image-container">
+                     <img src="hoatangle2.jpeg" alt="Hoa Tang Lễ - Mẫu 2" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                     <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                     <div>
+                        <h3 class="font-heading">Lệ Trắng Tiễn Đưa</h3>
+                        <p class="price">1.800.000₫</p>
+                     </div>
+                     <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <div class="product-card group">
+                <div class="image-container">
+                     <img src="hoatangle3.jpeg" alt="Hoa Tang Lễ - Mẫu 3" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                     <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                    <div>
+                        <h3 class="font-heading">Vô Cùng Thương Tiếc</h3>
+                        <p class="price">2.500.000₫</p>
+                    </div>
+                    <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <div class="product-card group">
+                <div class="image-container">
+                    <img src="hoatangle4.jpeg" alt="Hoa Tang Lễ - Mẫu 4" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                     <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                     <div>
+                        <h3 class="font-heading">An Lạc Miền Cực Lạc</h3>
+                        <p class="price">1.600.000₫</p>
+                     </div>
+                     <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <div class="product-card group">
+                <div class="image-container">
+                    <img src="hoatangle5.jpeg" alt="Hoa Tang Lễ - Mẫu 5" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                    <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                    <div>
+                        <h3 class="font-heading">Lưu Luyến Tiễn Biệt</h3>
+                        <p class="price">1.400.000₫</p>
+                    </div>
+                    <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <div class="product-card group">
+                <div class="image-container">
+                     <img src="hoatangle6.jpeg" alt="Hoa Tang Lễ - Mẫu 6" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                     <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                     <div>
+                        <h3 class="font-heading">Nhẹ Gót Sen Vàng</h3>
+                        <p class="price">1.900.000₫</p>
+                     </div>
+                     <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+             <div class="product-card group">
+                <div class="image-container">
+                     <img src="hoatangle7.jpeg" alt="Hoa Tang Lễ - Mẫu 7" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                     <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                     <div>
+                        <h3 class="font-heading">Kính Viếng - Mẫu 7</h3>
+                        <p class="price">1.350.000₫</p>
+                     </div>
+                     <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+             <div class="product-card group">
+                <div class="image-container">
+                     <img src="hoatangle8.jpeg" alt="Hoa Tang Lễ - Mẫu 8" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                     <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                     <div>
+                        <h3 class="font-heading">Chia Buồn Sâu Sắc - Mẫu 8</h3>
+                        <p class="price">2.100.000₫</p>
+                     </div>
+                     <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+             <div class="product-card group">
+                <div class="image-container">
+                     <img src="hoatangle9.jpeg" alt="Hoa Tang Lễ - Mẫu 9" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                     <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                     <div>
+                        <h3 class="font-heading">Thành Tâm Kính Viếng - Mẫu 9</h3>
+                        <p class="price">1.750.000₫</p>
+                     </div>
+                     <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+             <div class="product-card group">
+                <div class="image-container">
+                     <img src="hoatangle10.jpeg" alt="Hoa Tang Lễ - Mẫu 10" onerror="this.src='https://placehold.co/400x500/f0f9ff/333333?text=Image+L%E1%BB%97i'">
+                     <div class="overlay-actions">
+                        <button class="btn-quick-view"><i class="fas fa-eye mr-1"></i> Xem nhanh</button>
+                    </div>
+                </div>
+                <div class="details">
+                     <div>
+                        <h3 class="font-heading">Lẵng Hoa Chia Ly - Mẫu 10</h3>
+                        <p class="price">1.950.000₫</p>
+                     </div>
+                     <button class="btn btn-primary btn-add-cart">
+                        <i class="fas fa-cart-plus mr-2"></i>Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        </main>
+
+    <footer class="bg-gray-800 text-gray-300 pt-12 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+                <div>
+                    <h4 class="font-heading font-semibold text-white mb-5">Nhã Uyên Flower</h4>
+                    <p class="mb-4 text-sm leading-relaxed">Shop hoa tươi uy tín tại Huyện Trảng Bom, Đồng Nai. Mang đến những sản phẩm hoa chất lượng, trao gửi yêu thương và tô điểm cuộc sống.</p>
+                    <div class="flex space-x-3 footer-socials mt-5">
+                        <a href="https://facebook.com/yourpage" target="_blank" aria-label="Facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://instagram.com/yourprofile" target="_blank" aria-label="Instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@yourchannel" target="_blank" aria-label="Tiktok" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://zalo.me/yourzalonumber" target="_blank" aria-label="Zalo" title="Zalo"><i class="fa-solid fa-comment-dots"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-heading font-semibold text-white mb-5">Khám Phá</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#about" class="hover:text-pink-300 hover:underline">Về Chúng Tôi</a></li>
+                        <li><a href="#featured" class="hover:text-pink-300 hover:underline">Sản Phẩm Nổi Bật</a></li>
+                        <li><a href="#all-products" class="hover:text-pink-300 hover:underline">Tất Cả Sản Phẩm</a></li>
+                        <li><a href="#delivery" class="hover:text-pink-300 hover:underline">Chính Sách Giao Hàng</a></li>
+                        <li><a href="#contact" class="hover:text-pink-300 hover:underline">Liên Hệ</a></li>
+                    </ul>
+                </div>
+                 <div>
+                    <h4 class="font-heading font-semibold text-white mb-5">Danh Mục Hoa</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="category-tang-le.html" class="hover:text-pink-300 hover:underline">Hoa Tang Lễ</a></li>
+                        <li><a href="#hoa-nguoi-yeu" class="hover:text-pink-300 hover:underline">Hoa Tặng Người Yêu</a></li>
+                        <li><a href="#hoa-tot-nghiep" class="hover:text-pink-300 hover:underline">Hoa Tốt Nghiệp</a></li>
+                        <li><a href="#hoa-khai-truong" class="hover:text-pink-300 hover:underline">Hoa Khai Trương</a></li>
+                        <li><a href="#hoa-sinh-nhat" class="hover:text-pink-300 hover:underline">Hoa Sinh Nhật</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-heading font-semibold text-white mb-5">Thông Tin Liên Hệ</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start"><i class="fas fa-map-marker-alt mr-3 mt-1 text-pink-400 flex-shrink-0"></i> <span>[Số nhà, Đường], Thị trấn Trảng Bom, H. Trảng Bom, Đồng Nai</span></li>
+                        <li class="flex items-center"><i class="fas fa-phone-alt mr-3 text-pink-400 flex-shrink-0"></i> <a href="tel:0912345678" class="hover:text-pink-300">Hotline: 0912 345 678</a></li>
+                        <li class="flex items-center"><i class="fas fa-envelope mr-3 text-pink-400 flex-shrink-0"></i> <a href="mailto:nhauyenflower@email.com" class="hover:text-pink-300">nhauyenflower@email.com</a></li>
+                        <li class="flex items-center"><i class="fas fa-clock mr-3 text-pink-400 flex-shrink-0"></i> <span>Giờ mở cửa: 7:00 - 20:00 (T2-CN)</span></li>
+                     </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-10 pt-8 text-center text-xs">
+                 <p>&copy; <span id="current-year"></span> Nhã Uyên Flower. Mọi quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Reused JS from homepage/cart page ---
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.toggle('hidden');
+            mobileMenuButton.innerHTML = isHidden ? '<i class="fas fa-bars text-2xl"></i>' : '<i class="fas fa-times text-2xl"></i>';
+        });
+        const categoriesButton = document.getElementById('categories-button');
+        const categoriesDropdown = document.getElementById('categories-dropdown');
+        const dropdownIcon = categoriesButton.querySelector('.fa-chevron-down');
+        let dropdownTimeout;
+        const showDropdown = () => { clearTimeout(dropdownTimeout); categoriesDropdown.classList.add('show'); if(dropdownIcon) dropdownIcon.style.transform = 'rotate(180deg)'; }
+        const hideDropdown = (delay = 150) => { dropdownTimeout = setTimeout(() => { categoriesDropdown.classList.remove('show'); if(dropdownIcon) dropdownIcon.style.transform = 'rotate(0deg)'; }, delay); };
+        categoriesButton.addEventListener('mouseenter', showDropdown);
+        categoriesButton.addEventListener('focus', showDropdown);
+        categoriesDropdown.addEventListener('mouseenter', showDropdown);
+        categoriesButton.addEventListener('mouseleave', () => hideDropdown());
+        categoriesDropdown.addEventListener('mouseleave', () => hideDropdown());
+        categoriesButton.addEventListener('blur', (e) => { if (!categoriesDropdown.contains(e.relatedTarget)) { hideDropdown(0); } });
+        categoriesDropdown.addEventListener('focusout', (e) => { if (!categoriesDropdown.contains(e.relatedTarget) && e.relatedTarget !== categoriesButton) { hideDropdown(0); } });
+        const mobileCategoriesButton = document.getElementById('mobile-categories-button');
+        const mobileCategoriesDropdown = document.getElementById('mobile-categories-dropdown');
+        const mobileDropdownIcon = mobileCategoriesButton.querySelector('.mobile-dropdown-icon');
+        if (mobileCategoriesButton && mobileCategoriesDropdown && mobileDropdownIcon) {
+            mobileCategoriesDropdown.classList.remove('hidden');
+            mobileDropdownIcon.style.transform = 'rotate(180deg)';
+            mobileCategoriesButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = mobileCategoriesDropdown.classList.toggle('hidden');
+                mobileDropdownIcon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
+            });
+        }
+        const allMobileMenuItems = document.querySelectorAll('#mobile-menu a:not(#mobile-categories-button), #mobile-categories-dropdown a');
+        allMobileMenuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (!item.closest('#mobile-categories-dropdown')) {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuButton.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+                }
+                if (!item.closest('#mobile-categories-dropdown') && mobileCategoriesDropdown) {
+                     mobileCategoriesDropdown.classList.add('hidden');
+                     if (mobileDropdownIcon) mobileDropdownIcon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+        document.addEventListener('click', function (e) { if (e.target.closest('a, button, input, select, textarea, label, [role="button"], [role="link"], [tabindex]:not([tabindex="-1"])')) return; if (e.target.closest('.dropdown-content, #mobile-menu')) return; for (let i = 0; i < 5; i++) { setTimeout(() => createPetal(e.clientX, e.clientY), i * 40); } });
+        function createPetal(x, y) { const petal = document.createElement('span'); const petals = ['🌸', '💮', '🏵️']; petal.textContent = petals[Math.floor(Math.random() * petals.length)]; petal.classList.add('petal'); const randomX = (Math.random() - 0.5) * 2; const randomR = (Math.random() - 0.5) * 2; const randomSize = 1.2 + Math.random() * 0.6; const randomDuration = 2.8 + Math.random() * 2; petal.style.setProperty('--random-x', randomX); petal.style.setProperty('--random-r', randomR); petal.style.setProperty('--fall-duration', `${randomDuration}s`); petal.style.fontSize = `${randomSize}rem`; const offsetX = (Math.random() - 0.5) * 30; const offsetY = (Math.random() - 0.5) * 30; petal.style.left = `${x + offsetX}px`; petal.style.top = `${y + offsetY}px`; document.body.appendChild(petal); petal.addEventListener('animationend', () => { petal.remove(); }); }
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+        const observerCallback = (entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); } }); };
+        const scrollObserver = new IntersectionObserver(observerCallback, observerOptions);
+        const sectionsToAnimate = document.querySelectorAll('.fade-in-section');
+        sectionsToAnimate.forEach(section => { scrollObserver.observe(section); });
+
+        // Add to cart button functionality (Placeholder)
+        const addToCartButtons = document.querySelectorAll('.btn-add-cart');
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check mr-2"></i> Đã thêm';
+                button.disabled = true;
+                button.classList.add('bg-green-500', 'hover:bg-green-600');
+                 button.classList.remove('btn-primary');
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    button.classList.remove('bg-green-500', 'hover:bg-green-600');
+                    button.classList.add('btn-primary');
+                }, 2000);
+            });
+        });
+
+         // Quick view button functionality (Placeholder)
+         const quickViewButtons = document.querySelectorAll('.btn-quick-view');
+         quickViewButtons.forEach(button => {
+             button.addEventListener('click', (e) => {
+                 e.preventDefault();
+                 alert('Chức năng Xem nhanh đang được phát triển!');
+             });
+         });
+
+    </script>
+
+</body>
+</html>
